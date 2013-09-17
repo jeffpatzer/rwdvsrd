@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>RWD vs RD</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="../components/groundwork/css/groundwork.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    </head>
+    <body class='padded'>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <h1>Resposive Web Design vs. Responsive Delivery</h1>
+
+        <h2 class='box asphalt'>Overview</h2>
+
+        <div class="gap-bottom">
+            As cited by Ethan Marcotte in his groundbreaking article <a href="http://alistapart.com/article/responsive-web-design">Responsive Web Design</a> published May 25, 2010, RWD consists of three main components:
+            <ul>
+                <li>Flexible Grid</li>
+                <li>Responsive Images</li>
+                <li>Media Queries</li>
+            </ul>
+            In the book, <a href="http://www.abookapart.com/products/responsive-web-design">Responsive Web Design</a>, Marcotte further expounds on the components and methodologies. While the following article does its best to explain Responsive Web Design, reading, at a minimum, the article listed, will provide grounding for what will follow.
+        </div>
+
+        <div class="gap-bottom">
+            Responsive Delivery, made possible through <a href="https://console.moovweb.com/learn/tutorials/index">Moovweb's SDK</a>, takes the RWD techniques, integrates them, and expands them. RWD is a great set of techniques that when paired with Moovweb's SDK, becomes even more powerful. The deployment of RWD techniques through MoovSDK allows for succint code which in the long run is easier to deploy and maintain.
+        </div>
+
+        <div class="gap-bottom">
+            "Going responsive" typically requires an entire rethinking of design and development methodoligies of one's current website. Marcotte cites designopment, the tight colloration of designers and developers, as the most effective method for doing so. As most sites have been developed for a fixed-width layout, repurposing all functionality and content to a responsive layout can prove very difficult from both a design and technical perspective.
+        </div>
+
+        <div class="gap-bottom">
+            Responsive Delivery allows for a development team to quickly integrate the techniques of Responsive Web Design into their website endpoints. After integration, maintenance and iteration are quick and efficient due to a decoupling, hour-glass architecture permitted using MoovSDK.
+        </div>
+
+        <h2 class="box asphalt">Responsive Components</h2>
+
+        <h3>Flexible Grid</h3>
+
+        <div class="gap-bottom">
+            RWD makes use of a flexible grid to create areas on a page which can flow according to canvas size. The most common version of this grid is the 12-column grid.
+        </div>
+
+        <h3>Responsive Images</h3>
+
+        <div class="gap-bottom">
+            Most likely the simplest of the responsive components, making images "responsive" requires adding a couple simple lines to the main CSS file of a site.
+
+<div class="gap-bottom gap-top"><code>
+<pre>
+img {
+    max-width: 100%;
+    height: auto;
+}
+</pre>
+</code></div>
+
+            The CSS above will cause an image to scale to the size of its parent.
+
+            <h4 class='gap-top'>RWD Deployment</h4>
+
+            <div class="gap-bottom">
+                The CSS code can easily be included in the main CSS file. However, making an image responsive does not make it appropriate for the screen size. Imagine for a instance you have three devices with various screen sizes, an iPhone (320px), an iPad Mini (768px), and a desktop computer (1024px). In addition to screen size, also take into account the various speeds the devices may be accessing content: iPhone (3G), iPad Mini (wifi), desktop (wifi). Let's say for instance you want to serve a single image with your responsive HTML. You then decide, that the best image, for resolution is going to be the biggest one which the desktop user will see. Take for example the following three versions of the same image.
+            </div>
+
+            <div class='box gap-bottom'>
+                <p class="">1024x768px :: 184KB</p>
+                <img src="img/1024x768px.jpg" alt="">
+            </div>
+            <div class="box gap-bottom">
+                <p class="">640x480px :: 87KB</p>
+                <img src="img/640x480px.jpg" alt="">
+            </div>
+            <div class="box gap-bottom">
+                <p class="">320x240px :: 33KB</p>
+                <img src="img/320x240px.jpg" alt="">
+            </div>
+
+            <div class="gap-bottom">
+                Each version is a different resolution and size. If you expand your browser out to full screen, you will see the images scale appropriately (they are "responsive"). If you scale your browser window down, you will notice they become the same size. They will look the same, except at different screen sizes you may wish to have a better resolution. More than likely at a desktop size, you want a large picture which the user can view. In this case, you will end up serving the largest image all the time. This is irresponsible from a performance standpoing.
+            </div>
+
+            <div class="gap-bottom">
+                At this juncture, you realize you want to deliver a higher res image to the larger screen, and a lower res image to the smaller screen. Following RWD techniques, you would have to manage this with client-side JS. In addition, you would have to include the various image sizes in the HTML. This requires a JS library to manage image changes in addition to serving up additional HTML to devices which don't need it. Let's review the difference in the code required to manage all of this clientside using a <a href="https://github.com/scottjehl/picturefill">professionally developed library</a> (which mimics the proposed W3C spec to support image swapping) versus that needed for responsive delivery.
+            </div>
+
+            <div class="">
+                <h5>RWD Code</h5>
+                <div>
+<code class="block gap-bottom"><pre>
+&lt;span data-picture data-alt="A giant stone face at The Bayon temple in Angkor Thom, Cambodia"&gt;
+    &lt;span data-src="small.jpg"&gt;&lt;/span&gt;
+    &lt;span data-src="medium.jpg"     data-media="(min-width: 400px)"&gt;&lt;/span&gt;
+    &lt;span data-src="large.jpg"      data-media="(min-width: 800px)"&gt;&lt;/span&gt;
+    &lt;span data-src="extralarge.jpg" data-media="(min-width: 1000px)"&gt;&lt;/span&gt;
+
+    &lt;!-- Fallback content for non-JS browsers. Same img src as the initial, unqualified source element. --&gt;
+    &lt;noscript&gt;
+        &lt;img src="external/imgs/small.jpg" alt="A giant stone face at The Bayon temple in Angkor Thom, Cambodia"&gt;
+    &lt;/noscript&gt;
+&lt;/span&gt;
+</pre></code>
+
+now let's say you want to include retina image replacement as well.
+
+<code class='block gap-bottom gap-top'><pre>
+&lt;span data-picture data-alt="A giant stone face at The Bayon temple in Angkor Thom, Cambodia"&gt;
+   &lt;span data-src="small.jpg"&gt;&lt;/span&gt;
+   &lt;span data-src="small_x2.jpg"      data-media="(min-device-pixel-ratio: 2.0)"&gt;&lt;/span&gt;
+   &lt;span data-src="medium.jpg"        data-media="(min-width: 400px)"&gt;&lt;/span&gt;
+   &lt;span data-src="medium_x2.jpg"     data-media="(min-width: 400px) and (min-device-pixel-ratio: 2.0)"&gt;&lt;/span&gt;
+   &lt;span data-src="large.jpg"         data-media="(min-width: 800px)"&gt;&lt;/span&gt;
+   &lt;span data-src="large_x2.jpg"      data-media="(min-width: 800px) and (min-device-pixel-ratio: 2.0)"&gt;&lt;/span&gt;
+   &lt;span data-src="extralarge.jpg"    data-media="(min-width: 1000px)"&gt;&lt;/span&gt;
+   &lt;span data-src="extralarge_x2.jpg" data-media="(min-width: 1000px) and (min-device-pixel-ratio: 2.0)"&gt;&lt;/span&gt;
+
+   &lt;!-- Fallback content for non-JS browsers. Same img src as the initial, unqualified source element. --&gt;
+   &lt;noscript&gt;
+       &lt;img src="external/imgs/small.jpg" alt="A giant stone face at The Bayon temple in Angkor Thom, Cambodia"&gt;
+   &lt;/noscript&gt;
+&lt;/span&gt;
+</pre></code>
+
+and no in addition, you need to include an external javascript file
+
+<code class="gap-bottom gap-top block"><pre>
+&lt;script src="js/picturefill.js"&gt;&lt;/script&gt;
+</pre></code>
+                </div>
+            </div>
+
+            <div>
+                <h5>RD Code</h5>
+
+                <div class="gap-bottom">
+                    Rather than inject a myraid of additional HTML, MoovSDK allows us to target our device and alter the src according.
+<code class="gap-bottom block"><pre>
+&lt;!-- Small Image --&gt;
+&lt;img src="small.jpg"/&gt;
+&lt;!-- Medium Image --&gt;
+&lt;img src="medium.jpg"/&gt;
+&lt;!-- Large Image --&gt;
+&lt;img src="large.jpg"/&gt;
+</pre></code>
+
+If we want to switch out a source attribute in the MoovSDK it is a simple as calling a function.
+
+<code class="gap-bottom block"><pre>
+&lt;!-- Starting HTML --&gt;
+&lt;img src="large.jpg"/&gt;
+
+&lt;!-- Tritium Code --&gt;
+$small = "320x240"
+$$("img") {
+    src_replace($small)
+}
+
+&lt;!-- Resulting HTML --&gt;
+&lt;img src="large.jpg?w=320&amp;h=240"/&gt;
+</pre></code>
+
+                <p>As you can see, the function smartly uses the Moovweb Image Optimization service, to serve up a properly scaled version of the image. This scaled version will be served from Moovweb's globally distributed CDN.</p>
+
+                <p>In addition, this method allows only the need for a single master image on the source site. The image optimization easily takes care of the different sizes needed for proper deploy at any size. This allows for an infinite number of combinations to serve whatever size device is being targeted.</p>
+
+                </div>
+            </div>
+
+            <h4>Code Summary</h4>
+
+            <div class="gap-bottom">
+                Using the recommended JS library to manage responsive images results in a myraid of additional html, not needed by most devices. It is overly complicated and requires multipl unique images. RD smartly only delivers html to the device which it needs. Keeping the html clean and succinct without the need for a 3rd party JS library.
+            </div>
+        </div>
+
+        <h3>Media Queries</h3>
+
+        <div>
+            Lorem Ipsum
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+        <script src="../components/groundwork/js/groundwork.all.js"></script>
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='//www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-XXXXX-X');ga('send','pageview');
+        </script>
+    </body>
+</html>
