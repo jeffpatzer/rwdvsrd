@@ -54,7 +54,227 @@
         <h3>Flexible Grid</h3>
 
         <div class="gap-bottom">
-            RWD makes use of a flexible grid to create areas on a page which can flow according to canvas size. The most common version of this grid is the 12-column grid.
+            RWD makes use of a flexible grid to create areas on a page which can flow according to canvas size. The grid is the most important piece of the RWD techniques. The most common version of this grid is the 12-column grid. These columns allow various layouts to be easily definied. As the canvas size changes from device to device, the grid can allow reflow of items around one another. RWD posits that usage of this CSS layout reflow is sufficient to create a UX experience that can function on a wide range of screen sizes. Responsive Delivery limits this idea to a more minimal set of screens. It uses this grid to reflow items, but within a range that is less drastic. By focusing on a small range, this mitigates constraints imposed by the need to serve multiple screen sizes.
+        </div>
+
+        <div class="gap-bottom">
+            Working with a grid is effective in the sense that almost all websites follow some grid layout. Take for instance the following example.
+
+            <div class="row gap-top gap-bottom ta-center">
+                <div class="box square success gap-bottom four fourths">navigation</div>
+                <div class="box square one half question gap-bottom">left column</div>
+                <div class="box square one half question gap-bottom">right column</div>
+                <div class="box square four fourths success gap-bottom">footer</div>
+            </div>
+
+            Resizing your browser will show the columns collapse into rows. We can alter this behavior to make the columns maintain their shape as well, rather than collapsing.
+
+            <div class="row gap-top gap-bottom ta-center">
+                <div class="box square mobile success gap-bottom four fourths">navigation</div>
+                <div class="box square mobile one half question gap-bottom">left column</div>
+                <div class="box square mobile one half question gap-bottom">right column</div>
+                <div class="box square mobile four fourths success gap-bottom">footer</div>
+            </div>
+        </div>
+
+        <div class="gap-bottom">
+            The idea now, is you can set-up all your pages using this grid system to reflow content in the way you want. However, let's take our example layouts and see what happens when we want to reflow items in a manner that makes sense for different UX purposes following just RWD techniques.
+        </div>
+
+        <div class="gap-bottom">
+
+            The html for the simplified grid looks like
+
+<code class="block gap-top gap-bottom"><pre>
+&lt;div class="row"&gt;
+    &lt;div class="two halves"&gt; navigation   &lt;/div&gt;
+    &lt;div class="one half"&gt;   left column  &lt;/div&gt;
+    &lt;div class="one half"&gt;   right column &lt;/div&gt;
+    &lt;div class="two halves"&gt; footer       &lt;/div&gt;
+&lt;/div&gt;
+</pre></code>
+
+            now let's assume that we've got content in the navigation, that we want to show in the footer, but only on larger screens. To do this, we have to include the content in both places with hiding classes.
+
+<code class="block gap-top gap-bottom"><pre>
+&lt;div class="row"&gt;
+    &lt;div class="two halves"&gt;
+        navigation
+        &lt;p&gt;CONTENT IN HEADER&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="one half"&gt;   left column  &lt;/div&gt;
+    &lt;div class="one half"&gt;   right column &lt;/div&gt;
+    &lt;div class="two halves"&gt;
+        footer
+        &lt;p class="hide-on-mobile hide-on-small-tablet"&gt;CONTENT FROM HEADER&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</pre></code>
+
+            What is happening here, is we start having, in the HTML to manage content appearance. If we extrapolate this small example, what you can imagine is that, on a page by page basis, you are deciding, what content stays, what content goes, apply a myraid of classes all over the html. Now, in addition, there is certain functionality, not possible through CSS alone. For instance a JS widget, like a carousel or you want to collapse content in accordion elements. In addition to serving additonal html, now your JS needs to account for the screen sizes as well.
+
+<code class="block gap-top gap-bottom"><pre>
+&lt;!-- Example HTML --&gt;
+&lt;div class="row"&gt;
+    &lt;div class="two halves"&gt;
+        navigation
+        &lt;p&gt;content in header&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="one half"&gt;
+        left column
+        &lt;div&gt;
+            mobile carousel
+            &lt;img src="img1-sm.jpg" alt=""&gt;
+            &lt;img src="img2-sm.jpg" alt=""&gt;
+            &lt;img src="img3-sm.jpg" alt=""&gt;
+            &lt;img src="img4-sm.jpg" alt=""&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+            desktop carousel
+            &lt;img src="img1.jpg" alt=""&gt;
+            &lt;img src="img2.jpg" alt=""&gt;
+            &lt;img src="img3.jpg" alt=""&gt;
+            &lt;img src="img4.jpg" alt=""&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="one half"&gt;   right column &lt;/div&gt;
+    &lt;div class="two halves"&gt;
+        footer
+        &lt;p class="hide-on-mobile hide-on-small-tablet"&gt;content from header&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Example Javascript --&gt;
+jQuery(window).on("resize", function() {
+    // On a desktop screen
+    if (window.innerWidth > 320) {
+        mobileCarousel.deInitialize();
+        desktopCarousel.initialize();
+        accordionElements.deInitialize();
+    } else {
+    // On a mobile screen
+        mobileCarousel.initialize();
+        desktopCarousel.deInitialize();
+        accordionElements.initialize();
+    }
+});
+// Functions defined in above snippet...
+var MobileCarousel = ...
+</pre></code>
+
+            As such, now your HTML contains all items, for every screen, and your developer is spending time writing javascript to manage screen changes (which negatively impacts performance for detecting screen changes). Let's review now the code that would be written using RD. The source HTML would be
+
+<code class="block gap-top gap-bottom"><pre>
+&lt;!-- Example Input HTML --&gt;
+&lt;div class="row"&gt;
+    &lt;div class="two halves"&gt;
+        navigation
+        &lt;p&gt;content in header&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="one half"&gt;
+        left column
+        &lt;div&gt;
+            desktop carousel
+            &lt;img src="img1.jpg" alt=""&gt;
+            &lt;img src="img2.jpg" alt=""&gt;
+            &lt;img src="img3.jpg" alt=""&gt;
+            &lt;img src="img4.jpg" alt=""&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="one half"&gt;   right column &lt;/div&gt;
+    &lt;div class="two halves"&gt;
+        footer
+    &lt;/div&gt;
+&lt;/div&gt;
+</pre></code>
+
+            To perform the changes for the mobile site, we run the following piece of Tritium. The resulting HTML is directly below that.
+
+<code class="block gap-top gap-bottom"><pre>
+&lt;!-- Tritium Code to Output Mobile Version --&gt;
+$$("img") {
+    $small = "320x240"
+    src_replace($small)
+}
+$$(".carousel") {
+    init_carousel("mobile")
+}
+</pre></code>
+
+<code class="block gap-top gap-bottom"><pre>
+&lt;!-- Resulting HTML --&gt;
+&lt;div class="row"&gt;
+    &lt;div class="two halves"&gt;
+        navigation
+        &lt;p class="header-content" &gt;content in header&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="one half"&gt;
+        left column
+        &lt;div class="carousel" data-ur-set="carousel" data-ur-carousel-component="view_container"&gt;
+            &lt;div data-ur-carousel-component="button" data-ur-carousel-button-type="prev"&gt;Prev&lt;/div&gt;
+            &lt;div data-ur-carousel-component="button" data-ur-carousel-button-type="next"&gt;Next&lt;/div&gt;
+            &lt;div data-ur-carousel-component='scroll_container'&gt;
+                mobile carousel
+                &lt;img src="img1.jpg?w=320&amp;h=240" &gt;
+                &lt;img src="img2.jpg?w=320&amp;h=240" &gt;
+                &lt;img src="img3.jpg?w=320&amp;h=240" &gt;
+                &lt;img src="img4.jpg?w=320&amp;h=240" &gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="one half"&gt;   right column &lt;/div&gt;
+    &lt;div class="two halves"&gt;
+        footer
+    &lt;/div&gt;
+&lt;/div&gt;
+</pre></code>
+
+            To perform the changes for the desktop site, we run the following piece of Tritium. The resulting HTML is directly below that.
+
+<code class="block gap-top gap-bottom"><pre>
+&lt;!-- Tritium Code to Output Desktop Version --&gt;
+$$("p.header-content") {
+    copy_to(".footer")
+}
+$$(".carousel") {
+    init_carousel("desktop")
+}
+</pre></code>
+
+<code class="block gap-top gap-bottom"><pre>
+&lt;!-- Resulting HTML --&gt;
+&lt;div class="row"&gt;
+    &lt;div class="two halves"&gt;
+        navigation
+        &lt;p&gt;content in header&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="one half"&gt;
+        left column
+        &lt;div class="carousel" data-ur-set="carousel" data-ur-carousel-component="view_container"&gt;
+            &lt;div data-ur-carousel-component="button" data-ur-carousel-button-type="prev"&gt;Prev&lt;/div&gt;
+            &lt;div data-ur-carousel-component="button" data-ur-carousel-button-type="next"&gt;Next&lt;/div&gt;
+            &lt;div data-ur-carousel-component='scroll_container'&gt;
+                desktop carousel
+                &lt;img src="img1.jpg" &gt;
+                &lt;img src="img2.jpg" &gt;
+                &lt;img src="img3.jpg" &gt;
+                &lt;img src="img4.jpg" &gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="one half"&gt;   right column &lt;/div&gt;
+    &lt;div class="two halves"&gt;
+        footer
+        &lt;p&gt;content from header&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</pre></code>
+
+
+            <h4 class="gap-bottom">Code Summary</h4>
+
+            As can be seen, we alter the HTML in a minimal manner to achieve our desired result. We declaratively add attributes and leverage the <a href="http://uraniumjs.com/">UraniumJS</a> framework to quickly create widgets specific to the UX. By removing the need for JS to manage the UX (showing, hiding, initializing and deinitializing widgets), the code becomes more succint and easier to manage.
+
         </div>
 
         <h3>Responsive Images</h3>
@@ -192,7 +412,110 @@ $$("img") {
         <h3>Media Queries</h3>
 
         <div>
-            Lorem Ipsum
+            A widely supported attribute, media queries allow one to target, in CSS, sepecific device features. The available features are
+            <ul class="gap-bottom">
+                <li>width</li>
+                <li>height</li>
+                <li>device-width</li>
+                <li>device-height</li>
+                <li>orientation</li>
+                <li>aspect-ratio</li>
+                <li>device-aspect-ratio</li>
+                <li>color</li>
+                <li>color-index</li>
+                <li>monochrome</li>
+                <li>resolution</li>
+                <li>scan</li>
+                <li>grid</li>
+            </ul>
+
+            Through the use of these features, we can target specific screen sizes, or whichever feature we have availble, and silo CSS styling to those conditions. They are conditional checks in your styles. An example is
+
+<code class="block gap-top gap-bottom"><pre>
+/* screen media type? screen at least 1024px wide?
+@media screen and (min-width: 1024px) {
+    body {
+        font-size: 100%;
+    }
+}
+</pre></code>
+
+            Deploying these styles into say a RWD stylesheet or a RD spreadsheet is going to identical syntax. The limitation however, is that only so much functionality can be targeted via media queries. Marcotte states <quote>...media queries already give us an incredibly broad vocabulary, one we can use to articulate how we’d like our designs to appear in various devices and browsers.</quote>. If you are looking to change functionality, you will need to use JS. The main purpose of the media queries consequently becomes showing and hiding of elements based on a minimal set of conditions. To believe the media query is a powerful enough tool to handle all cases, is just simply not true.
+
+        </div>
+
+
+        <h2 class="box asphalt">RWD and RD Development Workflow and Release Management</h2>
+
+        <div class="padding-top padding-bottom">
+            Workflow and release management are extremely important when considering RWD. To better understand the RWD workflow, let's work through a what-if case. We will assume the RWD site has already been built.
+        </div>
+
+        <h3 class="gap-top">Example RWD Workflow</h3>
+
+        <div class="padding-top padding-bottom">
+            A ticket comes in regarding a bug on the website. Say for instance, I've got an issue regarding the spacing in my navigation. The navigation is too small on desktop and I want to space it out more. To update and fix this bug, I spool up my full-stack server to work on. I locate the menu CSS file and decide the best way to fix this is to add a media query which only targets the menu when its larger than 760px.
+
+<code class="block gap-top gap-bottom"><pre>
+@media screen and (min-width: 760px) {
+    nav ul li {
+        font-size: 2em;
+    }
+}
+</pre></code>
+
+            <style>
+                @media screen and (min-width: 760px) {
+                    nav ul li {
+                        font-size: 2em;
+                    }
+                }
+            </style>
+
+            Example Menu (change browser width to see change)
+
+            <nav class="nav" title="iPad Menu">
+              <ul>
+                <li><button>Nav Item 1</button></li>
+                <li><button>Nav Menu 1</button>
+                  <ul>
+                    <li><button>Menu Item 1</button></li>
+                    <li><button>Sub Menu 1</button>
+                      <ul>
+                        <li><button>Sub Menu Item 1</button></li>
+                        <li><button>Sub Menu Item 2</button></li>
+                      </ul>
+                    </li>
+                    <li><button>Menu Item 2</button></li>
+                  </ul>
+                </li>
+                <li><button>Nav Item 3</button></li>
+              </ul>
+            </nav>
+
+            Overall, this change is fairly easy to put in. I did not have to change any functionality or alter any major features. However, because the style is in with all other styles, I proceed to have to test on every screen instance for my site. Moreover, let's review now, the release process that will have to occur. Since my app is all completely tied together, I am gated from releasing this small fix until all other teams are lined up in a release. This could be weeks or months. As a front-end developer working on the experience, I am gated by all these other limiting factors.
+
+        </div>
+
+        <h3 class="gap-top">Example RD Workflow</h3>
+
+        <div class="padding-top padding-bottom">
+            Let's take the same bug as the RWD example above. In this case our site was built using RD. Rather than firing up my full-stack server, I start up my MoovSDK. I quickly locate the menu CSS file. Since I serve up a specific stylesheet based on device and screensize, I do not need a media query and simply add in my style.
+
+<code class="block gap-top gap-bottom"><pre>
+nav ul li {
+    font-size: 2em;
+}
+</pre></code>
+
+            Since this fix is only for this one endpoint of devices, I'm confident the fix won't overflow to anywhere it shouldn't. In addition, because my experience layer is indepent of the full-stack deployment, I can easily push out this fix to production. I can deploy this fix with no concern at the state of the work on other parts of the site because my code only deals with the source site and does not have any interaction with the back-end. A ticket can be turned around in a matter of hours with confidence of affecting other parts of the site.
+
+        </div>
+
+        <h3>Workflow Review</h3>
+
+        <div class="padding-top padding-bottom">
+            Based on these very simple examples, the code change is not very different. However, the ability to rapidly release the change once made because of the decoupled nature of the overall setup is extremely different. By focusing on more specific endpoints, and having more tools with which to alter the html and experience, the overall development and iteration process is much faster.
         </div>
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
